@@ -1,0 +1,16 @@
+@charset "utf-8";
+/* CSS Document */
+
+@font-face {
+	font-family: 'courneuf';
+	src: url("../assets/courneuf-regular.woff") format('woff'),
+       url("../assets/courneuf-regular.woff2") format('woff2'),
+       url("../assets/courneuf-regular.ttf") format('truetype');
+}
+
+body {
+	font-family: 'courneuf', Fallback, sans-serif;
+  color: #dddddd;
+  text-align: center;
+  background-color: #000000;
+}
