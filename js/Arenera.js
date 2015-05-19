@@ -18,9 +18,12 @@ var ctx = stage.getContext("2d"); // and canvas element
 var gLoop; // for game loop
 var frameRate = 25; // Game loop frame rate
 var center = {}; // stores center stage coordinates
-var playing = true; // boolean stores whether in main loop gameplay or not
+var playing = false; // boolean stores whether in main loop gameplay or not
 
 var spriteList = []; // stores all sprites
+var txtList = []; // stores all txts
+var world = []; // stores all elements in world
+var step = 5; // size of step
 
 
 //***GENERAL METHODS***\\
@@ -38,10 +41,44 @@ function dim(w,h) {
 function mainLoop() {
     clear();
     drawSprites();
+    drawTxts();
+    checkIfDone();
     if (playing) {
         gLoop = setTimeout(mainLoop, 1000/frameRate); // loop the main loop
     }
 }
+
+
+
+function wrapText(text, x, y, maxWidth, lineHeight) { // http://www.html5canvastutorials.com/tutorials/html5-canvas-wrap-text-tutorial/
+	var paragraphs = text.split('/n');
+	for (var p = 0; p < paragraphs.length; p++) {
+		var words = paragraphs[p].split(' ');
+		var line = '';
+		for(var n = 0; n < words.length; n++) {
+			var testLine = line + words[n] + ' ';
+			var metrics = ctx.measureText(testLine);
+			var testWidth = metrics.width;
+			if(testWidth > maxWidth && line.length > 0) {
+				ctx.fillText(line, x, y);
+				line = words[n] + ' ';
+				y += lineHeight;
+			}
+			else {
+				line = testLine;
+			}
+		}
+		ctx.fillText(line, x, y);
+		y += lineHeight;
+	}
+}
+
+
+function getDistance(x1, y1, x2, y2) { // find distance between two points
+	var dist = Math.round(Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)));
+	return dist;
+}
+
 
 //***CONSTRUCTORS***\\
 
@@ -57,6 +94,8 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
     this.actions = pActions;
     this.currentAction = pActions[0];
     this.currentSkinIndex = 0;
+    this.count = 0; // used for cycling through frames
+    this.skinFR = 8; // Defines framerate of skin cycling
     this.x = pX;
     this.y = pY;
     this.width = pWidth;
@@ -71,12 +110,20 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
 
     // Functions:
     this.action = function(actionNumber) { // This starts sequence of skins corresponding to the given number
-        this.currentAction = pActions[actionNumber];
-    }
-    this.nextSkin = function() { // Displays next skin in current action sequence. If at end of sequence, start over
-        this.currentSkinIndex ++;
-        if (this.currentSkinIndex == this.currentAction.length) {
+        if (this.actions[actionNumber] != this.currentAction) {
+            this.currentAction = this.actions[actionNumber];
+            this.count = 0;
             this.currentSkinIndex = 0;
+        }
+    }
+    this.nextSkin = function() { // Displays next skin in current action sequence at a framerate specified in constructor. If at end of sequence, start over
+        this.count ++;
+        if (this.count > frameRate/this.skinFR) {
+            this.count = 0;
+            this.currentSkinIndex ++;
+            if (this.currentSkinIndex == this.currentAction.length) {
+                this.currentSkinIndex = 0;
+            }
         }
     }
 
@@ -92,6 +139,53 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
         this.shown = false;
     }
 
+}
+
+
+/**
+ * Text object class constructor.
+ * Takes a string as content, an array of actions
+ * (arrays of skins to be iterated; first array
+ * is default action; if only 1 array with only 1 skin,
+ * this sprite is "static"), x and y coordinates, default width.
+ */
+function TextObj(txts, pX, pY, maxWidth) {
+    this.txtNum = 0;
+    this.txts = txts;
+    this.x = pX;
+    this.y = pY;
+    this.maxWidth = maxWidth;
+    this.shown = true;
+
+    txtList.push(this);
+    world.push(this);
+
+    this.nextTxt = function() {
+        this.txtNum ++;
+        if (this.txtNum == this.txts.length) {
+            this.txtNum = 0;
+        }
+    }
+    this.draw = function() {
+        wrapText(this.txts[this.txtNum], this.x, this.y, this.maxWidth, 25);
+    }
+
+    this.show = function() { // adds this sprite to display list
+        this.shown = true;
+    }
+    this.hide = function() { // removes this sprite from display list
+        this.shown = false;
+    }
+
+}
+
+
+//***WORLD METHODS***\\
+function moveWorld(x,y) {
+    for (var i = 0; i < world.length; i++) {
+        world[i].x += x;
+        world[i].y += y;
+    }
 }
 
 
@@ -117,7 +211,7 @@ function draw(img, x, y, width) {
 /**
  * Draws all sprites on display list
  */
- function drawSprites(argument) {
+ function drawSprites() {
      for (i=0; i<spriteList.length; i++) {
          sprite = spriteList[i];
          if (sprite.shown) {
@@ -126,6 +220,20 @@ function draw(img, x, y, width) {
          }
      }
  }
+
+
+ function drawTxts() {
+     for (i=0; i<txtList.length; i++) {
+         txt = txtList[i];
+         if (txt.shown) {
+             txt.draw();
+         }
+     }
+ }
+
+
+
+
 
 
 /*******PRELOADER*******/
