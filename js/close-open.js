@@ -31,6 +31,8 @@ var outroTxts = ["¡Hola otra vez!", "¿Qué más?", "¡Se acabó!"];
 var exitTxt;
 var exitCount = 0;
 
+var part = 1; // 1 for intro, 2 for game, 3 for outro
+
 //***EVENT HANDLERS***\\
 function keyDownHandler(evt) {
     switch (evt.keyCode) {
@@ -54,6 +56,10 @@ function keyDownHandler(evt) {
             avatar.action(4);
             moveWorld(0,-1*step);
             break;
+        case 32: // space
+            evt.preventDefault();
+            avatar.jump();
+            break;
         default:
    }
 }
@@ -76,19 +82,19 @@ function mouseDownHandler(evt) {
  * Starts gameplay. Create world, then call main loop.
  */
 function gameplay(argument) {
-    window.addEventListener("keydown", keyDownHandler, false);
-    window.addEventListener("keyup", keyUpHandler, false);
-
+    //window.addEventListener("keydown", keyDownHandler, false);
+    //window.addEventListener("keyup", keyUpHandler, false);
+    part = 2;
     exitTxt = new TextObj(["exit();"],center.x-25, center.y+200, 100);
 
 
     playing = true;
-    mainLoop(); // Call main loop
+    //mainLoop(); // Call main loop
 }
 
 
 function checkIfDone() {
-    if (getDistance(exitTxt.x,exitTxt.y,avatar.x,avatar.y) < 50) {
+    if (part == 2 && getDistance(exitTxt.x,exitTxt.y,avatar.x,avatar.y) < 50) {
         exitCount ++;
         if (exitCount > frameRate*3) {
             playing = false;
@@ -122,8 +128,8 @@ function intro(e) {
     ctx.font = "20px courneuf"; // Will need to load this font from css sheet
     clear();
     // Create sprites: Sprite("name", [[action1Skin1, action1Skin2, ...], [action2Skin1, action2Skin2, ...], ... ], Xcoor, Ycoor, Width)
-    avatar = new Sprite("avatar", [ [standSkin], [walk1Skin, walk2Skin], [walkR1Skin, walkR2Skin], [walkU1Skin, walkU2Skin], [walkD1Skin, walkD2Skin]  ], center.x, center.y, 70);
-    draw(avatar.actions[0][0],center.x,stage.height,stage.width);
+    avatar = new Sprite("avatar", [ [standSkin], [walk1Skin, walk2Skin], [walkR1Skin, walkR2Skin], [walkU1Skin, walkU2Skin], [walkD1Skin, walkD2Skin]  ], center.x, center.y, 100);
+    // draw(avatar.actions[0][0],center.x,stage.height,stage.width);
     // Create intro text
     var introTxtObj = new TextObj(introTxts, center.x, 50, 450);
     introTxtObj.draw();
@@ -135,12 +141,13 @@ function intro(e) {
             stage.removeEventListener("mousedown", nextTxt, false);
             gameplay();
         }
-        else {
-            clear();
-            draw(avatar.actions[0][0],center.x,stage.height,stage.width);
-            introTxtObj.draw();
-        }
     }
+
+    window.addEventListener("keydown", keyDownHandler, false);
+    window.addEventListener("keyup", keyUpHandler, false);
+
+    playing = true;
+    mainLoop(); // Call main loop
 
     stage.addEventListener("mousedown", nextTxt, false);
 }

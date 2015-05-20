@@ -24,6 +24,7 @@ var spriteList = []; // stores all sprites
 var txtList = []; // stores all txts
 var world = []; // stores all elements in world
 var step = 5; // size of step
+var worldColor = [221,221,221] // stores world color in rgb
 
 
 //***GENERAL METHODS***\\
@@ -43,6 +44,7 @@ function mainLoop() {
     drawSprites();
     drawTxts();
     checkIfDone();
+    paintWorld(worldColor[0],worldColor[1],worldColor[2]);
     if (playing) {
         gLoop = setTimeout(mainLoop, 1000/frameRate); // loop the main loop
     }
@@ -98,6 +100,9 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
     this.skinFR = 8; // Defines framerate of skin cycling
     this.x = pX;
     this.y = pY;
+    this.jumpCount = 0;
+    this.prevY = pY;
+    this.jLoop;
     this.width = pWidth;
     this.alpha = 1; // opacity
     this.shown = true; // shown by default
@@ -137,6 +142,25 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
     }
     this.hide = function() { // removes this sprite from display list
         this.shown = false;
+    }
+
+    this.jump = function() {
+        if (this.jumpCount == 0) {
+            this.prevY = this.y;
+            this.jumpLoop();
+        }
+    }
+
+    this.jumpLoop = function() {
+        if (this.jumpCount < frameRate/1.5) {
+            this.jumpCount ++;
+            this.y = this.prevY - Math.pow(frameRate/3,2) + Math.pow(this.jumpCount-frameRate/3,2);
+            this.jLoop = setTimeout(function(thisObj) { thisObj.jumpLoop(); }, 1000/frameRate, this); // weird syntax makes settimeout work
+        }
+        else {
+            this.y = this.prevY;
+            this.jumpCount = 0;
+        }
     }
 
 }
@@ -232,7 +256,17 @@ function draw(img, x, y, width) {
  }
 
 
-
+function paintWorld(r,g,b) {
+    var imgData = ctx.getImageData(0,0,stage.width,stage.height);
+    for (var i = 0; i < imgData.data.length; i+=4) {
+        if (imgData.data[i] != 0) {
+            imgData.data[i] = r;
+            imgData.data[i+1] = g;
+            imgData.data[i+2] = b;
+        }
+    }
+    ctx.putImageData(imgData,0,0);
+}
 
 
 
