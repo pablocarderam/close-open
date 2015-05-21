@@ -18,6 +18,7 @@ var ctx = stage.getContext("2d"); // and canvas element
 var gLoop; // for game loop
 var frameRate = 25; // Game loop frame rate
 var center = {}; // stores center stage coordinates
+var mouse = {}; // stores center stage coordinates
 var playing = false; // boolean stores whether in main loop gameplay or not
 
 var spriteList = []; // stores all sprites
@@ -26,8 +27,19 @@ var world = []; // stores all elements in world
 var step = 5; // size of step
 var worldColor = [221,221,221] // stores world color in rgb
 
+var glitching = false;
+var glitchLoop;
+
 
 //***GENERAL METHODS***\\
+
+
+function mouseMoveHandler(evt) {
+    var rect = stage.getBoundingClientRect();
+	mouse.x = evt.clientX - rect.left;
+    mouse.y = evt.clientY - rect.top;
+}
+
 
 /**
  * Sets stage dimensions
@@ -43,8 +55,16 @@ function mainLoop() {
     clear();
     drawSprites();
     drawTxts();
-    checkIfDone();
+    if (pickGender) {
+        showOrthodoxOppressiveGenders();
+    }
     paintWorld(worldColor[0],worldColor[1],worldColor[2]);
+    if (pickColor) {
+        showColors();
+    }
+
+    checkIfDone();
+
     if (playing) {
         gLoop = setTimeout(mainLoop, 1000/frameRate); // loop the main loop
     }
@@ -81,6 +101,49 @@ function getDistance(x1, y1, x2, y2) { // find distance between two points
 	return dist;
 }
 
+function randInt(upperBound) {
+    return Math.floor(upperBound*Math.random());
+}
+
+
+function shuffle(array) { // Fisher-Yates (Knuth) algorithm. http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    var currentIndex = array.length, temporaryValue, randomIndex ;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
+
+function glitchEngine() {
+    if (glitching) {
+        worldColor = [randInt(255),randInt(255),randInt(255)];
+
+        avatar.jGlitch = randInt(2);
+        if (avatar.jGlitch == 0) {
+            avatar.jGlitch = -1;
+        }
+
+        shuffle(walkHandlers);
+
+        noise.play();
+
+        glitchLoop = setTimeout(glitchEngine, 1000*randInt(60));
+    }
+}
+
+
 
 //***CONSTRUCTORS***\\
 
@@ -103,6 +166,7 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
     this.jumpCount = 0;
     this.prevY = pY;
     this.jLoop;
+    this.jGlitch = 1;
     this.width = pWidth;
     this.alpha = 1; // opacity
     this.shown = true; // shown by default
@@ -154,7 +218,7 @@ function Sprite(pName, pActions, pX, pY, pWidth) {
     this.jumpLoop = function() {
         if (this.jumpCount < frameRate/1.5) {
             this.jumpCount ++;
-            this.y = this.prevY - Math.pow(frameRate/3,2) + Math.pow(this.jumpCount-frameRate/3,2);
+            this.y = this.prevY - this.jGlitch*(Math.pow(frameRate/3,2) - Math.pow(this.jumpCount-frameRate/3,2));
             this.jLoop = setTimeout(function(thisObj) { thisObj.jumpLoop(); }, 1000/frameRate, this); // weird syntax makes settimeout work
         }
         else {
@@ -178,8 +242,11 @@ function TextObj(txts, pX, pY, maxWidth) {
     this.txts = txts;
     this.x = pX;
     this.y = pY;
+    this.offX = 0;
+    this.offY = 0;
     this.maxWidth = maxWidth;
     this.shown = true;
+    this.size = 20;
 
     txtList.push(this);
     world.push(this);
@@ -191,7 +258,10 @@ function TextObj(txts, pX, pY, maxWidth) {
         }
     }
     this.draw = function() {
-        wrapText(this.txts[this.txtNum], this.x, this.y, this.maxWidth, 25);
+        var prevSize = ctx.font;
+        ctx.font = this.size + "px courneuf";
+        wrapText(this.txts[this.txtNum], this.x+this.offX, this.y+this.offY, this.maxWidth, this.size+5);
+        ctx.font = prevSize;
     }
 
     this.show = function() { // adds this sprite to display list
@@ -257,6 +327,8 @@ function draw(img, x, y, width) {
 
 
 function paintWorld(r,g,b) {
+    document.getElementsByTagName("body")[0].style.color = rgbToHex(r,g,b);
+
     var imgData = ctx.getImageData(0,0,stage.width,stage.height);
     for (var i = 0; i < imgData.data.length; i+=4) {
         if (imgData.data[i] != 0) {
@@ -268,6 +340,15 @@ function paintWorld(r,g,b) {
     ctx.putImageData(imgData,0,0);
 }
 
+
+function componentToHex(c) { // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
 
 
 /*******PRELOADER*******/
@@ -284,6 +365,13 @@ function newSkin(path) {
     skin.filePath = path;
     assets.push(skin);
     return skin;
+}
+
+function newAudio(path) {
+    audio = new Audio();
+    audio.filePath = path;
+    assets.push(audio);
+    return audio;
 }
 
 /**
@@ -313,7 +401,14 @@ function preload(msg) {
     }
 
     for (var i = 0; i < total; i++) {
-        assets[i].onload = onload;
-        assets[i].src = assets[i].filePath;
+        if (Image.prototype.isPrototypeOf(assets[i])) {
+            assets[i].onload = onload;
+            assets[i].src = assets[i].filePath;
+        }
+        else if (Audio.prototype.isPrototypeOf(assets[i])) {
+            assets[i].oncanplaythrough = onload;
+            assets[i].src = assets[i].filePath;
+            assets[i].load();
+        }
     }
 }
