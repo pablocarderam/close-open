@@ -95,7 +95,12 @@ function walk(direction) {
 function keyUpHandler(evt) {
     switch (evt.keyCode) {
         default:
-            avatar.action(0);
+            if (part == 1) {
+                avatar.action(6);
+            }
+            else {
+                avatar.action(0);
+            }
    }
 }
 
@@ -236,6 +241,7 @@ function showOrthodoxOppressiveGenders() {
 
 
 function outro(e) {
+    part = 3;
     ctx.font = "20px courneuf"; // Will need to load this font from css sheet
     glitching = false;
     clear();
