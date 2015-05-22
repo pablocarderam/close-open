@@ -96,7 +96,12 @@ function keyUpHandler(evt) {
     switch (evt.keyCode) {
         default:
             if (part == 1) {
-                avatar.action(6);
+                if (avatar.gender == 2) {
+                    avatar.action(6);
+                }
+                else {
+                    avatar.action(5);
+                }
             }
             else {
                 avatar.action(0);
@@ -164,6 +169,7 @@ function intro(e) {
     // Create sprites: Sprite("name", [[action1Skin1, action1Skin2, ...], [action2Skin1, action2Skin2, ...], ... ], Xcoor, Ycoor, Width)
     avatar = new Sprite("avatar", [ [standSkin], [walk1Skin, walk2Skin], [walkR1Skin, walkR2Skin], [walkU1Skin, walkU2Skin], [walkD1Skin, walkD2Skin], [standWSkin], [standMSkin]  ], center.x, center.y, 100);
     avatar.action(6);
+    avatar.gender = 2;
     // draw(avatar.actions[0][0],center.x,stage.height,stage.width);
     // Create intro text
     var introTxtObj = new TextObj(introTxts, center.x, 50, 450);
@@ -190,16 +196,19 @@ function intro(e) {
         if (introTxtObj.txtNum == 5) {
             pickGender = false;
             if (mouse.x < center.x) {
+                avatar.gender = 1;
                 avatar.action(5);
             }
             if (mouse.x > center.x) {
                 avatar.action(6);
+                avatar.gender = 2;
             }
         }
 
         if (introTxtObj.txtNum == 0) { // if done with all txts,
             introTxtObj.hide();
             avatar.action(0);
+            avatar.gender = "agsyfdkuagfykfira";
             stage.removeEventListener("mousedown", nextTxt, false);
             gameplay();
         }
