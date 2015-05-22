@@ -130,6 +130,7 @@ function checkIfDone() {
     else if (part == 2) {
         exitCount = 0;
         exitTxt.size = 20;
+        exitTxt.offX = 0;
     }
 }
 
