@@ -15,6 +15,15 @@ body {
   	background-color: #000000;
 }
 
+canvas {
+	cursor: pointer;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
 p {
 	width: 500px;
 	margin: auto;
