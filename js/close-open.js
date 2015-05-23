@@ -153,7 +153,7 @@ function gameplay(argument) {
     artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 405, center.y+1350, 500);
     world.push(artIs);
     artWhat = new TextObj([artWhatTxt],center.x+455, center.y-1000, 500);
-    media = new TextObj([mediaTxt],center.x+505, center.y+600, 400);
+    media = new TextObj([mediaTxt],center.x+405, center.y+600, 400);
     mediaWhat = new TextObj([mediaWhatTxt],center.x+225, center.y+50, 400);
 
     glitching = true;
@@ -191,7 +191,6 @@ function checkIfDone() {
         }
     }
 }
-
 
 /**
  * Starts game.
