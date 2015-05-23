@@ -24,8 +24,8 @@ var playing = false; // boolean stores whether in main loop gameplay or not
 var spriteList = []; // stores all sprites
 var txtList = []; // stores all txts
 var world = []; // stores all elements in world
-var step = 5; // size of step
-var worldColor = [221,221,221] // stores world color in rgb
+var step = 15; // size of step DEV set to 5
+var worldColor = [221,221,221]; // stores world color in rgb
 
 var glitching = false;
 var glitchLoop;
@@ -306,8 +306,8 @@ function draw(img, x, y, width) {
  * Draws all sprites on display list
  */
  function drawSprites() {
-     for (i=0; i<spriteList.length; i++) {
-         sprite = spriteList[i];
+     for (i=spriteList.length; i>0; i--) {
+         sprite = spriteList[i-1];
          if (sprite.shown) {
              draw(sprite.currentAction[sprite.currentSkinIndex], sprite.x, sprite.y, sprite.width);
              sprite.nextSkin();

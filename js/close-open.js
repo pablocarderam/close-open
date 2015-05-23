@@ -21,6 +21,8 @@ var walkU2Skin = newSkin("assets/Sprite/walkU2.png");
 var walkD1Skin = newSkin("assets/Sprite/walkD1.png");
 var walkD2Skin = newSkin("assets/Sprite/walkD2.png");
 
+var artIsSkin = newSkin("assets/art.png");
+
 // Audio
 var noise = newAudio("assets/whiteNoise.mp3");
 
@@ -30,14 +32,27 @@ var walkHandlers = ["left","right","up","down"];
 
 // Texts
 var txtNum = 0;
-var endTxts = [];
-var introTxts = ["¡Hola!", "Elige color", "", "Elige género opresivo", "", "¡A jugar!"];
-var outroTxts = ["¡Hola otra vez!", "¿Qué más?", "¡Se acabó!"];
+//var introTxts = ["¡Hola!", "Elige color", "", "Elige género opresivo", "", "¡A jugar!"];
+//var outroTxts = ["¡Hola otra vez!", "¿Qué más?", "¡Se acabó!"];
 
 var exitTxt;
+var showExitCount = 0;
 var exitCount = 0;
 var pickColor = false;
 var pickGender = false;
+
+var windowClose;
+var web20;
+var web20What;
+var webSem;
+var webSemWhat;
+
+var windowOpen;
+var art;
+var artIs;
+var artWhat;
+var media;
+var mediaWhat;
 
 var part = 1; // 1 for intro, 2 for game, 3 for outro
 
@@ -118,7 +133,24 @@ function gameplay(argument) {
     //window.addEventListener("keyup", keyUpHandler, false);
 
     part = 2;
-    exitTxt = new TextObj(["exit();"],center.x-25, center.y+200, 100);
+
+    exitTxt = new TextObj(["window.new();"],center.x-50, center.y, 100);
+    exitTxt.shown = false;
+
+    windowClose = new TextObj(["window.close();"],center.x-240, center.y, 100);
+    windowOpen = new TextObj(["window.open();"],center.x+125, center.y, 100);
+
+    web20 = new TextObj([web20Txt],center.x-605, center.y+50, 500);
+    web20What = new TextObj([web20WhatTxt],center.x-805, center.y+600, 500);
+    webSem = new TextObj([webSemTxt],center.x-605, center.y+1050, 500);
+    webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+1400, 500);
+
+    art = new TextObj([artTxt],center.x+425, center.y+1400, 400);
+    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 525, center.y+1550, 400);
+    world.push(artIs);
+    artWhat = new TextObj([artWhatTxt],center.x+605, center.y-1000, 400);
+    media = new TextObj([mediaTxt],center.x+605, center.y+600, 400);
+    mediaWhat = new TextObj([mediaWhatTxt],center.x+425, center.y+50, 400);
 
     glitching = true;
     glitchEngine();
@@ -128,19 +160,31 @@ function gameplay(argument) {
 
 
 function checkIfDone() {
-    if (part == 2 && getDistance(exitTxt.x,exitTxt.y,avatar.x,avatar.y) < 50) {
-        exitCount ++;
-        exitTxt.size ++;
-        exitTxt.offX -=1;
-        if (exitCount > frameRate*3) {
-            playing = false;
-            outro();
+    if (part == 2) {
+        if (showExitCount > -1) {
+            showExitCount ++;
+            if (showExitCount > frameRate*2) { //After dev, set to 60
+                showExitCount = -1;
+                exitTxt.shown = true;
+            }
         }
-    }
-    else if (part == 2) {
-        exitCount = 0;
-        exitTxt.size = 20;
-        exitTxt.offX = 0;
+
+        else if (showExitCount < 0) {
+            if (getDistance(exitTxt.x+60,exitTxt.y+5,avatar.x,avatar.y) < 50) {
+                exitCount ++;
+                exitTxt.size ++;
+                exitTxt.offX -=3;
+                if (exitCount > frameRate*3) {
+                    playing = false;
+                    outro();
+                }
+            }
+            else if (part == 2) {
+                exitCount = 0;
+                exitTxt.size = 20;
+                exitTxt.offX = 0;
+            }
+        }
     }
 }
 
@@ -149,12 +193,23 @@ function checkIfDone() {
  * Starts game.
  */
 function init() {
+    txtNum = 0;
+    showExitCount = 0;
+    exitCount = 0;
+    pickColor = false;
+    pickGender = false;
+    part = 1;
+    worldColor = [221,221,221];
+    paintWorld(worldColor[0],worldColor[1],worldColor[2]);
+    glitching = false;
+    clear();
+
     ctx.font = "30px courneuf"; // Will need to load this font from css sheet
     ctx.fillStyle = "#dddddd";
-    ctx.fillText("window.open() || window.close()", 40, 235); // show preloader
+    ctx.fillText("window.open() || window.close()", 40, 235); // show title
     ctx.font = "15px courneuf"; // Will need to load this font from css sheet
     ctx.fillStyle = "#dddddd";
-    ctx.fillText("Un ensayo sobre el rol del arte en el mundo de la Web", 70, 260); // show preloader
+    ctx.fillText("Un ensayo sobre el rol del arte en el mundo de la Web", 70, 260); // show subtitle
 
     stage.addEventListener("mousedown", intro, false);
     stage.addEventListener("mousemove", mouseMoveHandler, false);
@@ -164,6 +219,7 @@ function init() {
 
 function intro(e) {
     stage.removeEventListener("mousedown", intro, false);
+
     ctx.font = "20px courneuf"; // Will need to load this font from css sheet
     clear();
     // Create sprites: Sprite("name", [[action1Skin1, action1Skin2, ...], [action2Skin1, action2Skin2, ...], ... ], Xcoor, Ycoor, Width)
@@ -172,15 +228,15 @@ function intro(e) {
     avatar.gender = 2;
     // draw(avatar.actions[0][0],center.x,stage.height,stage.width);
     // Create intro text
-    var introTxtObj = new TextObj(introTxts, center.x, 50, 450);
+    var introTxtObj = new TextObj(introTxts, center.x-225, 35, 450);
     introTxtObj.draw();
 
     function nextTxt(e) {
         introTxtObj.nextTxt();
-        if (introTxtObj.txtNum == 2) {
+        if (introTxtObj.txtNum == 5) {
             pickColor = true;
         }
-        if (introTxtObj.txtNum == 3) {
+        if (introTxtObj.txtNum == 6) {
             var pixel = ctx.getImageData(mouse.x, mouse.y, 1,1).data;
             if (pixel[0] != 0 || pixel[1] != 0 || pixel[2] != 0) {
                 pickColor = false;
@@ -190,10 +246,10 @@ function intro(e) {
                 introTxtObj.txtNum -= 1;
             }
         }
-        if (introTxtObj.txtNum == 4) {
+        if (introTxtObj.txtNum == 7) {
             pickGender = true;
         }
-        if (introTxtObj.txtNum == 5) {
+        if (introTxtObj.txtNum == 8) {
             pickGender = false;
             if (mouse.x < center.x) {
                 avatar.gender = 1;
@@ -255,8 +311,8 @@ function outro(e) {
     glitching = false;
     clear();
     draw(avatar.actions[0][0],center.x,stage.height,stage.width);
-    // Create intro text
-    var outroTxtObj = new TextObj(outroTxts, center.x, 50, 450);
+    // Create outro text
+    var outroTxtObj = new TextObj(outroTxts, center.x-225, 35, 450);
     outroTxtObj.draw();
 
     function nextTxt(e) {
@@ -265,6 +321,7 @@ function outro(e) {
             outroTxtObj.hide();
             stage.removeEventListener("mousedown", nextTxt, false);
             out();
+            init();
         }
         else {
             clear();
