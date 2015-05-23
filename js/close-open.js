@@ -25,6 +25,7 @@ var artIsSkin = newSkin("assets/art.png");
 
 // Audio
 var noise = newAudio("assets/whiteNoise.mp3");
+var music = newAudio("assets/TimeFcuk.mp3");
 
 // Declare sprites
 var avatar;
@@ -148,9 +149,9 @@ function gameplay(argument) {
     art = new TextObj([artTxt],center.x+425, center.y+1400, 400);
     artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 525, center.y+1550, 400);
     world.push(artIs);
-    artWhat = new TextObj([artWhatTxt],center.x+605, center.y-1000, 400);
-    media = new TextObj([mediaTxt],center.x+605, center.y+600, 400);
-    mediaWhat = new TextObj([mediaWhatTxt],center.x+425, center.y+50, 400);
+    artWhat = new TextObj([artWhatTxt],center.x+455, center.y-1000, 400);
+    media = new TextObj([mediaTxt],center.x+505, center.y+600, 400);
+    mediaWhat = new TextObj([mediaWhatTxt],center.x+225, center.y+50, 400);
 
     glitching = true;
     glitchEngine();
@@ -163,7 +164,7 @@ function checkIfDone() {
     if (part == 2) {
         if (showExitCount > -1) {
             showExitCount ++;
-            if (showExitCount > frameRate*2) { //After dev, set to 60
+            if (showExitCount > frameRate*60) { //After dev, set to 60
                 showExitCount = -1;
                 exitTxt.shown = true;
             }
@@ -203,6 +204,12 @@ function init() {
     paintWorld(worldColor[0],worldColor[1],worldColor[2]);
     glitching = false;
     clear();
+
+    music.play();
+    music.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
 
     ctx.font = "30px courneuf"; // Will need to load this font from css sheet
     ctx.fillStyle = "#dddddd";

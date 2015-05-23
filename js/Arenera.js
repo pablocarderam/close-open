@@ -24,7 +24,7 @@ var playing = false; // boolean stores whether in main loop gameplay or not
 var spriteList = []; // stores all sprites
 var txtList = []; // stores all txts
 var world = []; // stores all elements in world
-var step = 15; // size of step DEV set to 5
+var step = 5; // size of step DEV set to 5
 var worldColor = [221,221,221]; // stores world color in rgb
 
 var glitching = false;
@@ -389,14 +389,16 @@ function preload(msg) {
     ctx.fillText(tracker, 230, 265);
 
     function onload() { // this is the function called every time an asset is loaded
-        numLoaded ++;
-        tracker = numLoaded + " / " + total;
-        clear();
-        ctx.fillText(msg, 130, 235); // show preloader
-        ctx.fillText(tracker, 230, 265);
-        if (numLoaded == total) {
+        if (!playing) {
+            numLoaded ++;
+            tracker = numLoaded + " / " + total;
             clear();
-            init();
+            ctx.fillText(msg, 130, 235); // show preloader
+            ctx.fillText(tracker, 230, 265);
+            if (numLoaded == total) {
+                clear();
+                init();
+            }
         }
     }
 
