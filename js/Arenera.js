@@ -25,7 +25,7 @@ var spriteList = []; // stores all sprites
 var txtList = []; // stores all txts
 var world = []; // stores all elements in world
 var step = 5; // size of step
-var worldColor = [221,221,221] // stores world color in rgb
+var worldColor = [221,221,221]; // stores world color in rgb
 
 var glitching = false;
 var glitchLoop;
