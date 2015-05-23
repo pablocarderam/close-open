@@ -167,7 +167,7 @@ function checkIfDone() {
     if (part == 2) {
         if (showExitCount > -1) {
             showExitCount ++;
-            if (showExitCount > frameRate*6) { //After dev, set to 60
+            if (showExitCount > frameRate*60) { //After dev, set to 60
                 showExitCount = -1;
                 exitTxt.shown = true;
             }
