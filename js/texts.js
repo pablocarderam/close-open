@@ -56,7 +56,7 @@ var mediaWhatTxt = "¿Qué pasa con los nuevos medios? \nEstas herramientas abre
 var outroTxts = [
     "¿Hemos terminado ya? Muy bien.",
     "¿Sientes que te divertiste? ¿Hiciste algo que te gusta? ¿Aprendiste? Me alegra.",
-    "¿Sientes que fue una pérdida de tiempo? ¿Algo que normalmente no hubieras hecho? Mejor aún.",
+    "¿Sientes que fue una pérdida de tiempo? ¿Algo que normalmente no hubieras hecho? ¿Estás \"desfamiliarizado\"? Mejor aún.",
     "El arte de Internet debe hacerse a la tarea de reventar las burbujas de filtro que la Web 2.0 y la Web semántica construyen alrededor nuestro.",
     "Si llegaste hasta aquí pensando eso y no desististe a mitad de camino para revisar tu Facebook o buscar algo en Pinterest o Stumbleupon, creo que he logrado mi objetivo como ciberartista. Tu relación con Internet ha cambiado.",
     "Un poco.",

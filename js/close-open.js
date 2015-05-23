@@ -135,21 +135,24 @@ function gameplay(argument) {
 
     part = 2;
 
-    exitTxt = new TextObj(["window.new();"],center.x-50, center.y, 100);
+    exitTxt = new TextObj(["window.new();"],center.x-100, center.y-40, 100);
     exitTxt.shown = false;
+    exitTxt.size = 30;
 
-    windowClose = new TextObj(["window.close();"],center.x-240, center.y, 100);
-    windowOpen = new TextObj(["window.open();"],center.x+125, center.y, 100);
+    windowClose = new TextObj(["window.close();"],center.x-250, center.y, 100);
+    windowClose.size = 25;
+    windowOpen = new TextObj(["window.open();"],center.x+80, center.y, 100);
+    windowOpen.size = 25;
 
     web20 = new TextObj([web20Txt],center.x-605, center.y+50, 500);
     web20What = new TextObj([web20WhatTxt],center.x-805, center.y+600, 500);
     webSem = new TextObj([webSemTxt],center.x-605, center.y+1050, 500);
     webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+1400, 500);
 
-    art = new TextObj([artTxt],center.x+425, center.y+1400, 400);
-    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 525, center.y+1550, 400);
+    art = new TextObj([artTxt],center.x+345, center.y+1170, 500);
+    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 505, center.y+1350, 500);
     world.push(artIs);
-    artWhat = new TextObj([artWhatTxt],center.x+455, center.y-1000, 400);
+    artWhat = new TextObj([artWhatTxt],center.x+455, center.y-1000, 500);
     media = new TextObj([mediaTxt],center.x+505, center.y+600, 400);
     mediaWhat = new TextObj([mediaWhatTxt],center.x+225, center.y+50, 400);
 
@@ -164,7 +167,7 @@ function checkIfDone() {
     if (part == 2) {
         if (showExitCount > -1) {
             showExitCount ++;
-            if (showExitCount > frameRate*60) { //After dev, set to 60
+            if (showExitCount > frameRate*6) { //After dev, set to 60
                 showExitCount = -1;
                 exitTxt.shown = true;
             }
@@ -182,7 +185,7 @@ function checkIfDone() {
             }
             else if (part == 2) {
                 exitCount = 0;
-                exitTxt.size = 20;
+                exitTxt.size = 30;
                 exitTxt.offX = 0;
             }
         }
