@@ -24,7 +24,7 @@ var playing = false; // boolean stores whether in main loop gameplay or not
 var spriteList = []; // stores all sprites
 var txtList = []; // stores all txts
 var world = []; // stores all elements in world
-var step = 5; // size of step
+var step = 15; // size of step DEV set to 5
 var worldColor = [221,221,221]; // stores world color in rgb
 
 var glitching = false;

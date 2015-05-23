@@ -137,20 +137,20 @@ function gameplay(argument) {
     exitTxt = new TextObj(["window.new();"],center.x-50, center.y, 100);
     exitTxt.shown = false;
 
-    windowClose = new TextObj(["window.close();"],center.x-265, center.y, 100);
-    windowOpen = new TextObj(["window.open();"],center.x+145, center.y, 100);
+    windowClose = new TextObj(["window.close();"],center.x-240, center.y, 100);
+    windowOpen = new TextObj(["window.open();"],center.x+125, center.y, 100);
 
-    web20 = new TextObj([web20Txt],center.x-225, center.y-400, 400);
-    web20What = new TextObj([web20WhatTxt],center.x-725, center.y-50, 400);
-    webSem = new TextObj([webSemTxt],center.x-725, center.y+50, 400);
-    webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+150, 400);
+    web20 = new TextObj([web20Txt],center.x-605, center.y+50, 500);
+    web20What = new TextObj([web20WhatTxt],center.x-805, center.y+600, 500);
+    webSem = new TextObj([webSemTxt],center.x-605, center.y+1050, 500);
+    webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+1400, 500);
 
-    art = new TextObj([artTxt],center.x+225, center.y-300, 400);
-    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 300, center.y-150, 350);
+    art = new TextObj([artTxt],center.x+425, center.y+1400, 400);
+    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 525, center.y+1550, 400);
     world.push(artIs);
-    artWhat = new TextObj([artWhatTxt],center.x+725, center.y-50, 400);
-    media = new TextObj([mediaTxt],center.x+725, center.y+50, 400);
-    mediaWhat = new TextObj([mediaWhatTxt],center.x+225, center.y+150, 400);
+    artWhat = new TextObj([artWhatTxt],center.x+605, center.y-1000, 400);
+    media = new TextObj([mediaTxt],center.x+605, center.y+600, 400);
+    mediaWhat = new TextObj([mediaWhatTxt],center.x+425, center.y+50, 400);
 
     glitching = true;
     glitchEngine();
@@ -206,10 +206,10 @@ function init() {
 
     ctx.font = "30px courneuf"; // Will need to load this font from css sheet
     ctx.fillStyle = "#dddddd";
-    ctx.fillText("window.open() || window.close()", 40, 235); // show preloader
+    ctx.fillText("window.open() || window.close()", 40, 235); // show title
     ctx.font = "15px courneuf"; // Will need to load this font from css sheet
     ctx.fillStyle = "#dddddd";
-    ctx.fillText("Un ensayo sobre el rol del arte en el mundo de la Web", 70, 260); // show preloader
+    ctx.fillText("Un ensayo sobre el rol del arte en el mundo de la Web", 70, 260); // show subtitle
 
     stage.addEventListener("mousedown", intro, false);
     stage.addEventListener("mousemove", mouseMoveHandler, false);
@@ -308,10 +308,10 @@ function showOrthodoxOppressiveGenders() {
 function outro(e) {
     part = 3;
     ctx.font = "20px courneuf"; // Will need to load this font from css sheet
-    //glitching = false;
+    glitching = false;
     clear();
     draw(avatar.actions[0][0],center.x,stage.height,stage.width);
-    // Create intro text
+    // Create outro text
     var outroTxtObj = new TextObj(outroTxts, center.x-225, 35, 450);
     outroTxtObj.draw();
 
