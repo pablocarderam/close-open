@@ -174,7 +174,7 @@ function checkIfDone() {
         }
 
         else if (showExitCount < 0) {
-            if (getDistance(exitTxt.x+60,exitTxt.y+5,avatar.x,avatar.y) < 50) {
+            if (getDistance(exitTxt.x+60,exitTxt.y+5,avatar.x,avatar.y) < 100) {
                 exitCount ++;
                 exitTxt.size ++;
                 exitTxt.offX -=3;
