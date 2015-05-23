@@ -306,8 +306,8 @@ function draw(img, x, y, width) {
  * Draws all sprites on display list
  */
  function drawSprites() {
-     for (i=0; i<spriteList.length; i++) {
-         sprite = spriteList[i];
+     for (i=spriteList.length; i>0; i--) {
+         sprite = spriteList[i-1];
          if (sprite.shown) {
              draw(sprite.currentAction[sprite.currentSkinIndex], sprite.x, sprite.y, sprite.width);
              sprite.nextSkin();

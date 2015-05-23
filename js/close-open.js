@@ -21,7 +21,7 @@ var walkU2Skin = newSkin("assets/Sprite/walkU2.png");
 var walkD1Skin = newSkin("assets/Sprite/walkD1.png");
 var walkD2Skin = newSkin("assets/Sprite/walkD2.png");
 
-var artIsSkin = newSkin("assets/art.jpg");
+var artIsSkin = newSkin("assets/art.png");
 
 // Audio
 var noise = newAudio("assets/whiteNoise.mp3");
@@ -140,17 +140,17 @@ function gameplay(argument) {
     windowClose = new TextObj(["window.close();"],center.x-265, center.y, 100);
     windowOpen = new TextObj(["window.open();"],center.x+145, center.y, 100);
 
-    web20 = new TextObj([web20Txt],center.x-525, center.y-150, 400);
+    web20 = new TextObj([web20Txt],center.x-225, center.y-400, 400);
     web20What = new TextObj([web20WhatTxt],center.x-725, center.y-50, 400);
     webSem = new TextObj([webSemTxt],center.x-725, center.y+50, 400);
-    webSem = new TextObj([webSemWhatTxt],center.x-525, center.y+150, 400);
+    webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+150, 400);
 
-    art = new TextObj([artTxt],center.x+525, center.y-150, 400);
-    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 525, center.y-130, 200);
+    art = new TextObj([artTxt],center.x+225, center.y-300, 400);
+    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 300, center.y-150, 350);
     world.push(artIs);
     artWhat = new TextObj([artWhatTxt],center.x+725, center.y-50, 400);
     media = new TextObj([mediaTxt],center.x+725, center.y+50, 400);
-    mediaWhat = new TextObj([mediaWhatTxt],center.x+525, center.y+150, 400);
+    mediaWhat = new TextObj([mediaWhatTxt],center.x+225, center.y+150, 400);
 
     glitching = true;
     glitchEngine();
