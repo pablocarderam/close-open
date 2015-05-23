@@ -150,7 +150,7 @@ function gameplay(argument) {
     webSem = new TextObj([webSemWhatTxt],center.x-225, center.y+1400, 500);
 
     art = new TextObj([artTxt],center.x+245, center.y+1100, 500);
-    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 405, center.y+1350, 500);
+    artIs = new Sprite("artIs", [ [artIsSkin] ], center.x + 405, center.y+1350, 300);
     world.push(artIs);
     artWhat = new TextObj([artWhatTxt],center.x+455, center.y-1000, 500);
     media = new TextObj([mediaTxt],center.x+405, center.y+600, 400);
